@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.*?>
+<?import java.lang.*?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.helloworldfx.HelloController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+    <Label fx:id="welcomeText"/>
+    <HBox>
+        <Label text="Text field 1" />
+        <TextField fx:id="text1" />
+    </HBox>
+
+    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity">
+        <ComboBox fx:id="testCombo1" promptText="Please select number of jobs">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="10" />
+                    <String fx:value="25" />
+                    <String fx:value="50" />
+                </FXCollections>
+            </items>
+        </ComboBox>
+    </AnchorPane>
+    <Button text="Hello!" onAction="#onHelloButtonClick"/>
+</VBox>
