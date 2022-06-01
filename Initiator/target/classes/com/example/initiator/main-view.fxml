@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.Button?>
+<?import com.example.initiator.NumberField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Separator?>
+<GridPane
+            fx:controller="com.example.initiator.InitiatorController"
+            xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+
+        <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
+
+        <Label
+                text="Enter config information"
+                GridPane.columnIndex="0"
+                GridPane.rowIndex="0"/>
+        <Label
+                text="Hostname"
+                GridPane.rowIndex="1"/>
+        <TextField
+                fx:id="hostname"
+                text=""
+                promptText="localhost"
+                GridPane.rowIndex="2"/>
+        <Label
+                text="Port Number"
+                GridPane.rowIndex="3"/>
+        <NumberField
+                fx:id="port"
+                text=""
+                promptText="7777"
+                GridPane.rowIndex="4"/>
+        <Separator
+                GridPane.rowIndex="5"
+                GridPane.columnSpan="2" />
+        <Label
+                text="Number of Jobs"
+                GridPane.columnIndex="0"
+                GridPane.rowIndex="6"/>
+        <NumberField
+                fx:id="numJobs" text=""
+                GridPane.columnIndex="0"
+                GridPane.rowIndex="7"/>
+        <Button
+                text="Send"
+                onAction="#onSendBtnClicked"
+                GridPane.columnIndex="0"
+                GridPane.rowIndex="8"
+                GridPane.columnSpan="2"/>
+    </GridPane>
