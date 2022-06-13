@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -89,11 +90,6 @@ public class NodesController {
     protected void onStartNodesClicked() {
         try {
             if (loadBalancerConnection != null) {
-//                Looping through the number of nodes the user entered and creating a new node and sending its details to the load balancer server
-//                for (int i = 0; i < Integer.parseInt(numNodes.getText()); i++) {
-//                    CreateNode node = new CreateNode(i);
-//                    sendNodeDetails(node, nodeDetailsConnection());
-//                }
                 CreateNode node = new CreateNode(countNodes, Integer.parseInt(nodeWeight.getText()));
                 sendNodeDetails(node, nodeDetailsConnection());
                 countNodes ++;
@@ -109,5 +105,21 @@ public class NodesController {
         } catch(IOException e){
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    protected void onStartLoadBalancer(){
+        try {
+            PrintWriter writer = new PrintWriter(loadBalancerConnection.getOutputStream());
+            Map<String, Boolean> request = new HashMap<>();
+            request.put("start", true);
+            // just make sure you send data and do not wait for response
+            System.out.println("Sending request : " + request);
+            writer.println(request);
+            writer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

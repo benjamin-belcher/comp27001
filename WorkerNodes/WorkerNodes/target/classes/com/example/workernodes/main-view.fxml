@@ -58,4 +58,15 @@
             GridPane.columnIndex="0"
             GridPane.rowIndex="6"
             GridPane.columnSpan="2"/>
+
+    <Separator
+        GridPane.rowIndex="7"
+        GridPane.columnSpan="2" />
+
+    <Button
+            text="Start Load Balancer"
+            onAction="#onStartLoadBalancer"
+            GridPane.columnIndex="0"
+            GridPane.rowIndex="8"
+            GridPane.columnSpan="2"/>
 </GridPane>

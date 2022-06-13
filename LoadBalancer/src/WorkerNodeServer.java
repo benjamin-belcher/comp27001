@@ -14,7 +14,7 @@ public class WorkerNodeServer implements Runnable, IJobEvents, INodeEvents{
         store = _store;
         nodeStore = _nodeStore;
         t = new Thread(this, "WorkerNodeHandler");
-        System.out.println(t.getName() + " Has started to handle incoming jobs.");
+        System.out.println(t.getName() + " Is ready to start the load balancer");
         t.start();
     }
 
@@ -38,18 +38,6 @@ public class WorkerNodeServer implements Runnable, IJobEvents, INodeEvents{
         return null;
     }
 
-    public void handleNewClient(Socket client) throws IOException {
-        PrintWriter writer = new PrintWriter(client.getOutputStream());
-        while(true){
-            for(int i = 0; i<store.getJobs().size(); i++){
-                System.out.println("Sending: "+store.getJobs().get(i) + "to nodes");
-                writer.println(store.getJobs().get(i));
-                writer.flush();
-            }
-        }
-
-    }
-
     @Override
     public void run(){
         try{
@@ -57,56 +45,7 @@ public class WorkerNodeServer implements Runnable, IJobEvents, INodeEvents{
             while(true){
                 Socket newClient = ss.accept();
 
-                handleNewClient(newClient);
-            }
-//            Socket s;
-//            s = ss.accept();
-//            if(s.isConnected()){
-//                for(int i = 0; i<10; i++){
-//                    System.out.println(i);
-//                    PrintWriter writer = new PrintWriter(s.getOutputStream());
-//                    writer.println("Hi " + i);
-//                    writer.flush();
-//
-//                }
-//            }
-//            s.close();
-
-//            JobStore store = new JobStore();
-
-//            for(int i = 0; i<10; i++){
-//                System.out.println(i);
-//                s = ss.accept();
-//                PrintWriter writer = new PrintWriter(s.getOutputStream());
-//                writer.println("Hi " + i);
-//                writer.flush();
-//            }
-
-//            while (store.getJobs().size() != 0) {
-//                s = ss.accept();
-//                System.out.println("Accepting connections");
-//                store.sendJobs(s);
-//            }
-//            store.clearJobs();
-//            //we need to store incomming requests to process, and return them
-//        } catch (IOException e) {
-//            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void handleInitatorRequests(){
-        try{
-            ServerSocket ss = createSocket(7777);
-            Socket s;
-
-            //we need to store incomming requests to process, and return them
-            List<String> integerList = new LinkedList<>();
-            while (true) {
-                s = ss.accept();
-
-                InputStreamReader streamReader = new InputStreamReader(s.getInputStream());
+                InputStreamReader streamReader = new InputStreamReader(newClient.getInputStream());
                 BufferedReader reader = new BufferedReader(streamReader);
                 String message = reader.readLine();
 
@@ -115,15 +54,12 @@ public class WorkerNodeServer implements Runnable, IJobEvents, INodeEvents{
                 props.load(new StringReader(message.substring(1, message.length() - 1).replace(", ", "\n")));
                 Map<String, String> map2 = new HashMap<String, String>();
                 for (Map.Entry<Object, Object> e : props.entrySet()) {
-                    map2.put((String)e.getKey(), (String)e.getValue());
+                    map2.put((String)e.getKey(), (String) e.getValue());
                 }
 
-                System.out.println("Back to map job: "+map2);
-
-                PrintWriter writer = new PrintWriter(s.getOutputStream());
-                integerList.add(message);
-                writer.println(integerList);
-                writer.close();
+                if(Boolean.parseBoolean(map2.get("start"))){
+                     new RoundRobinScheduler(store, nodeStore);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
