@@ -28,7 +28,13 @@ public class InitiatorController {
                 JobRequest job = new JobRequest();
                 JobSender sender = new JobSender();
 
-                sender.sendDataToServer(job, hostname.getText(), Integer.parseInt(port.getText()));
+                sender.sendDataToServer(
+                        job,
+                        sender.connectToServer(
+                                hostname.getText(),
+                                Integer.parseInt(port.getText())
+                        )
+                );
             }
         }
         catch (IOException ex) {
