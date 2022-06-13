@@ -11,7 +11,7 @@ public class JobSender {
     JobSender(){
     }
 
-    // Hint use localhost for the hostname and port 8080
+    // Hint use localhost for the hostname and port 7777
     public Socket connectToServer(String hostname, int port){
         try{
             return new Socket(hostname, port);
@@ -21,14 +21,13 @@ public class JobSender {
         return null;
     }
 
-    public void sendDataToServer(JobRequest job, String hostname, int port) throws IOException {
+    public void sendDataToServer(JobRequest job, Socket connection) throws IOException {
 
         Map<String, String> jobMap = new HashMap<>();
         jobMap.put("id", job.id.toString());
         jobMap.put("time", Integer.toString(job.time));
 
-        Socket sc = new Socket(hostname, port);
-        PrintWriter writer = new PrintWriter(sc.getOutputStream());
+        PrintWriter writer = new PrintWriter(connection.getOutputStream());
 
         // just make sure you send data and do not wait for response
         System.out.println("Sending Job : " + job.id);

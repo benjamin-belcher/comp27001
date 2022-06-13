@@ -3,10 +3,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-public class Server implements Runnable{
+public class InitiatorServer implements Runnable{
     Thread t;
+    JobStore store;
 
-    Server(){
+    InitiatorServer(JobStore _store){
+        store = _store;
         t = new Thread(this, "InitatorHandler");
         System.out.println(t.getName() + " Has started to handle incoming jobs.");
         t.start();
@@ -45,7 +47,7 @@ public class Server implements Runnable{
                     map2.put((String)e.getKey(), (String)e.getValue());
                 }
 
-                System.out.println("Back to map job: "+map2);
+                store.addJob(map2);
 
                 PrintWriter writer = new PrintWriter(s.getOutputStream());
                 integerList.add(message);
