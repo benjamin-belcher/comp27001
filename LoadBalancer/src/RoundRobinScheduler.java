@@ -1,7 +1,10 @@
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -48,30 +51,28 @@ public class RoundRobinScheduler implements Runnable, IJobEvents, INodeEvents{
                 _orderedNodes.add(node.get("name"));
             }
         }
+        Collections.shuffle(_orderedNodes);
         return _orderedNodes;
     }
 
     public void ScheduleJobs(){
+//        This list is a list of available nodes, taken into account each nodes weight ( capability to process taksks )
         List<String> nodes = OrderNodes();
         System.out.println("Ordered nodes "+nodes);
+
+//        Set up a counter to track the position of the node list
         int nodeIndex = 0;
         for(int i = 0; i<jobs.size(); i++){
+//            Reset the counter if the index of the job list is the same as the last index in the node list
             if(nodeIndex == nodes.size()){
                 nodeIndex = 0;
             }
-            String nodeName = nodes.get(nodeIndex);
 
+            String nodeName = nodes.get(nodeIndex);
             String[] decomposedNodeName = nodeName.split("-");
             int nodeNumber = Integer.parseInt(decomposedNodeName[1]);
-            try{
-                Socket nodeConnection = new Socket("localhost",5000+nodeNumber);
-                PrintWriter writer = new PrintWriter(nodeConnection.getOutputStream());
-                writer.println(jobs.get(i));
-                System.out.println("Sending Job : "+jobs.get(i) + " to Node " + nodeName);
-                writer.flush();
-            } catch(IOException e){
-                e.printStackTrace();
-            }
+
+            new JobSenderThread(nodeName, nodeNumber, jobs.get(i));
             nodeIndex ++;
         }
     }

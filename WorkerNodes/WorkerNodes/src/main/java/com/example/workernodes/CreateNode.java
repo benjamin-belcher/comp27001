@@ -63,9 +63,11 @@ public class CreateNode implements Runnable{
 
                 Thread.sleep(Integer.parseInt(jobToProcess.get("time")));
 
+                System.out.println("Node " + _nodeNum + " has completed " + job + " and is FREE");
+
                 PrintWriter writer = new PrintWriter(currentNode.getOutputStream());
                 processedJob.add(job);
-                writer.println(processedJob);
+                writer.println("Job Complete: " + job);
                 writer.close();
 
             }
