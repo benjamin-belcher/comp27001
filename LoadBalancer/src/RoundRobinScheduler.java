@@ -73,6 +73,26 @@ public class RoundRobinScheduler implements Runnable, IJobEvents, INodeEvents{
             int nodeNumber = Integer.parseInt(decomposedNodeName[1]);
 
             new JobSenderThread(nodeName, nodeNumber, jobs.get(i));
+
+//            try{
+//                Socket nodeConnection = new Socket("localhost",5000+nodeNumber);
+//
+//                PrintWriter writer = new PrintWriter(nodeConnection.getOutputStream());
+//
+//                InputStreamReader response = new InputStreamReader((nodeConnection.getInputStream()));
+//                BufferedReader responseReader = new BufferedReader(response);
+//
+//                writer.println(jobs.get(i));
+//                System.out.println("Sending Job : "+jobs.get(i) + " to Node " + nodeName);
+//                writer.flush();
+//
+//                String responseMessage = responseReader.readLine();
+//                System.out.println(responseMessage);
+//
+//
+//            } catch(IOException e){
+//                e.printStackTrace();
+//            }
             nodeIndex ++;
         }
     }

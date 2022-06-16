@@ -44,7 +44,7 @@ public class CreateNode implements Runnable{
             ServerSocket currentNodesServer = new ServerSocket(port);
             System.out.println("Node: " + _nodeNum + " Is listening on port " + port);
             Socket currentNode;
-            List<String> processedJob = new LinkedList<>();
+            List<String> processedJobs = new LinkedList<>();
             while (true) {
                 currentNode = currentNodesServer.accept();
                 InputStreamReader streamReader = new InputStreamReader(currentNode.getInputStream());
@@ -61,12 +61,14 @@ public class CreateNode implements Runnable{
                     jobToProcess.put((String)e.getKey(), (String)e.getValue());
                 }
 
-                Thread.sleep(Integer.parseInt(jobToProcess.get("time")));
+                int processTime = Integer.parseInt(jobToProcess.get("time")) / _weight;
 
-                System.out.println("Node " + _nodeNum + " has completed " + job + " and is FREE");
+                Thread.sleep(processTime);
+
+                System.out.println("Node " + _nodeNum + " has completed " + jobToProcess.get("id") + " and  it took "+ processTime +" miliseconds and is now FREE");
 
                 PrintWriter writer = new PrintWriter(currentNode.getOutputStream());
-                processedJob.add(job);
+                processedJobs.add(job);
                 writer.println("Job Complete: " + job);
                 writer.close();
 

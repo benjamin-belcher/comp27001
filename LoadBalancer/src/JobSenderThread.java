@@ -6,14 +6,17 @@ import java.net.Socket;
 import java.util.Map;
 
 public class JobSenderThread implements Runnable{
+    Thread t;
     private String _nodeName;
     private int _nodeNum;
     private Map<String, String> _job;
 
     JobSenderThread(String nodeName, int nodeNum, Map<String, String> job){
+        t = new Thread(this, _nodeName+"JobSender");
         _nodeName = nodeName;
         _nodeNum = nodeNum;
         _job = job;
+        t.start();
     }
     public void run(){
         try{
@@ -22,14 +25,14 @@ public class JobSenderThread implements Runnable{
             PrintWriter writer = new PrintWriter(nodeConnection.getOutputStream());
 
             InputStreamReader response = new InputStreamReader((nodeConnection.getInputStream()));
-            BufferedReader responseReader = new BufferedReader(response);
+//            BufferedReader responseReader = new BufferedReader(response);
 
             writer.println(_job);
             System.out.println("Sending Job : "+_job + " to Node " + _nodeName);
             writer.flush();
 
-            String responseMessage = responseReader.readLine();
-            System.out.println(responseMessage);
+//            String responseMessage = responseReader.readLine();
+//            System.out.println(responseMessage);
 
 
         } catch(IOException e){
