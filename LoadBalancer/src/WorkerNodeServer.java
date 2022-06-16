@@ -24,6 +24,9 @@ public class WorkerNodeServer implements Runnable, IJobEvents, INodeEvents{
     }
 
     @Override
+    public void removeJob(){}
+
+    @Override
     public void nodeAdded(){
         nodes = nodeStore.getNodes();
     }
@@ -44,22 +47,30 @@ public class WorkerNodeServer implements Runnable, IJobEvents, INodeEvents{
             ServerSocket ss = createSocket(7070);
             while(true){
                 Socket newClient = ss.accept();
+                System.out.println("Connected to Worker Nodes " + newClient);
 
                 InputStreamReader streamReader = new InputStreamReader(newClient.getInputStream());
                 BufferedReader reader = new BufferedReader(streamReader);
                 String message = reader.readLine();
 
-                // use properties to restore the map
-                Properties props = new Properties();
-                props.load(new StringReader(message.substring(1, message.length() - 1).replace(", ", "\n")));
-                Map<String, String> map2 = new HashMap<String, String>();
-                for (Map.Entry<Object, Object> e : props.entrySet()) {
-                    map2.put((String)e.getKey(), (String) e.getValue());
+                if(message != null){
+                    // use properties to restore the map
+                    Properties props = new Properties();
+                    props.load(new StringReader(message.substring(1, message.length() - 1).replace(", ", "\n")));
+                    Map<String, String> map2 = new HashMap<String, String>();
+                    for (Map.Entry<Object, Object> e : props.entrySet()) {
+                        map2.put((String)e.getKey(), (String) e.getValue());
+                    }
+
+                    if(Boolean.parseBoolean(map2.get("start"))){
+                        RoundRobinScheduler rr = new RoundRobinScheduler(store, nodeStore);
+//                        store.addListener(rr);
+                    }
+                } else{
+                    nodeStore.clearNodes();
                 }
 
-                if(Boolean.parseBoolean(map2.get("start"))){
-                     new RoundRobinScheduler(store, nodeStore);
-                }
+
             }
         } catch (IOException e) {
             e.printStackTrace();

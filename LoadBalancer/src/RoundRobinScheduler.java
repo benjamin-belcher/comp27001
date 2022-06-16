@@ -36,6 +36,11 @@ public class RoundRobinScheduler implements Runnable, IJobEvents, INodeEvents{
 
     @Override
     public void jobAdded(){
+        jobs = store.getJobs();
+    }
+
+    @Override
+    public void removeJob(){
 
     }
 
@@ -62,38 +67,22 @@ public class RoundRobinScheduler implements Runnable, IJobEvents, INodeEvents{
 
 //        Set up a counter to track the position of the node list
         int nodeIndex = 0;
-        for(int i = 0; i<jobs.size(); i++){
-//            Reset the counter if the index of the job list is the same as the last index in the node list
-            if(nodeIndex == nodes.size()){
-                nodeIndex = 0;
+        if(jobs.size() == 0){
+            System.out.println("There are no jobs to send...");
+        } else {
+            for (int i = 0; i < jobs.size(); i++) {
+                //            Reset the counter if the index of the job list is the same as the last index in the node list
+                if (nodeIndex == nodes.size()) {
+                    nodeIndex = 0;
+                }
+
+                String nodeName = nodes.get(nodeIndex);
+                String[] decomposedNodeName = nodeName.split("-");
+                int nodeNumber = Integer.parseInt(decomposedNodeName[1]);
+
+                new JobSenderThread(nodeName, nodeNumber, jobs.get(i), store);
+                nodeIndex++;
             }
-
-            String nodeName = nodes.get(nodeIndex);
-            String[] decomposedNodeName = nodeName.split("-");
-            int nodeNumber = Integer.parseInt(decomposedNodeName[1]);
-
-            new JobSenderThread(nodeName, nodeNumber, jobs.get(i));
-
-//            try{
-//                Socket nodeConnection = new Socket("localhost",5000+nodeNumber);
-//
-//                PrintWriter writer = new PrintWriter(nodeConnection.getOutputStream());
-//
-//                InputStreamReader response = new InputStreamReader((nodeConnection.getInputStream()));
-//                BufferedReader responseReader = new BufferedReader(response);
-//
-//                writer.println(jobs.get(i));
-//                System.out.println("Sending Job : "+jobs.get(i) + " to Node " + nodeName);
-//                writer.flush();
-//
-//                String responseMessage = responseReader.readLine();
-//                System.out.println(responseMessage);
-//
-//
-//            } catch(IOException e){
-//                e.printStackTrace();
-//            }
-            nodeIndex ++;
         }
     }
 }

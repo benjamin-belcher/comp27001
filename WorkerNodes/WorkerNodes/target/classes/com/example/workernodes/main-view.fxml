@@ -65,6 +65,7 @@
 
     <Button
             text="Start Load Balancer"
+            fx:id="manageLoadBalancerState"
             onAction="#onStartLoadBalancer"
             GridPane.columnIndex="0"
             GridPane.rowIndex="8"

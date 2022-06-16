@@ -37,8 +37,6 @@ public class WorkerNodeDetailsServer implements Runnable{
                 BufferedReader reader = new BufferedReader(streamReader);
                 String message = reader.readLine();
 
-                System.out.println(message);
-
                 // use properties to restore the map
                 Properties props = new Properties();
                 props.load(new StringReader(message.substring(1, message.length() - 1).replace(", ", "\n")));
@@ -48,6 +46,8 @@ public class WorkerNodeDetailsServer implements Runnable{
                 }
 
                 nodeStore.addNode(map2);
+
+                System.out.println("Current nodes in store: " + nodeStore.getNodes());
 
                 PrintWriter writer = new PrintWriter(node.getOutputStream());
                 integerList.add(message);

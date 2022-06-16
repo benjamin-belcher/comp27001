@@ -1,6 +1,9 @@
 package com.example.workernodes;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -14,10 +17,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URL;
+import java.util.*;
 
 public class NodesController {
     @FXML
@@ -33,9 +34,14 @@ public class NodesController {
     private Button loadBalancerConnectionBtn;
 
     @FXML
+    private Button manageLoadBalancerState;
+
+    @FXML
     private Label loadBalancerConnectionText;
 
     private int countNodes = 0;
+
+    private List<CreateNode> nodes = new ArrayList<CreateNode>();
 
     @FXML
     private Socket connectToLoadBalancer(){
@@ -52,7 +58,7 @@ public class NodesController {
             return null;
         }
         loadBalancerConnectionText.setText("Disconnected from load balancer");
-        loadBalancerConnectionBtn.setText("Reconnect to load balancer");
+        loadBalancerConnectionBtn.setText("Connect to load balancer");
         return disconnectFromLoadBalancer();
     }
 
@@ -60,6 +66,8 @@ public class NodesController {
     private Socket disconnectFromLoadBalancer(){
         try{
             loadBalancerConnection.close();
+            loadBalancerConnection = null;
+            manageLoadBalancerState.setVisible(true);
             return loadBalancerConnection;
         } catch(IOException e){
             e.printStackTrace();
@@ -91,6 +99,7 @@ public class NodesController {
         try {
             if (loadBalancerConnection != null) {
                 CreateNode node = new CreateNode(countNodes, Integer.parseInt(nodeWeight.getText()));
+                nodes.add(node);
                 sendNodeDetails(node, nodeDetailsConnection());
                 countNodes ++;
             } else {
@@ -117,6 +126,7 @@ public class NodesController {
             System.out.println("Sending request : " + request);
             writer.println(request);
             writer.flush();
+            manageLoadBalancerState.setVisible(false);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

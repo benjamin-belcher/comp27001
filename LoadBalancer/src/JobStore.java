@@ -39,6 +39,16 @@ public class JobStore {
         }
     }
 
+    public void removeJob(Map<String, String> job){
+        if(jobs.contains(job)){
+            jobs.remove(jobs.indexOf(job));
+            for(IJobEvents clnt: listeners){
+                clnt.removeJob();
+            }
+            System.out.println("Removing Job " + job + " From the store");
+        }
+    }
+
     public void viewJobs(){
         for(int i = 0; i<jobs.size(); i++){
             System.out.println(jobs.get(i));

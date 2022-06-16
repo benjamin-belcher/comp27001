@@ -9,6 +9,7 @@ public class CreateNode implements Runnable{
     Thread t;
     private int _weight;
     private int _nodeNum;
+    public boolean nodeIsAlive;
 
     CreateNode(int nodeNum, int weight){
         _weight = weight;
@@ -39,13 +40,15 @@ public class CreateNode implements Runnable{
     }
 
     public void run(){
+        nodeIsAlive = t.isAlive();
         try {
             int port = 5000 + _nodeNum;
             ServerSocket currentNodesServer = new ServerSocket(port);
             System.out.println("Node: " + _nodeNum + " Is listening on port " + port);
             Socket currentNode;
             List<String> processedJobs = new LinkedList<>();
-            while (true) {
+            boolean recievedAllJobs = false;
+            while (!recievedAllJobs) {
                 currentNode = currentNodesServer.accept();
                 InputStreamReader streamReader = new InputStreamReader(currentNode.getInputStream());
                 BufferedReader reader = new BufferedReader(streamReader);
@@ -56,21 +59,26 @@ public class CreateNode implements Runnable{
                 // use properties to restore the map
                 Properties props = new Properties();
                 props.load(new StringReader(job.substring(1, job.length() - 1).replace(", ", "\n")));
-                Map<String, String> jobToProcess = new HashMap<String, String>();
+                Map<String, String> jobObject = new HashMap<String, String>();
                 for (Map.Entry<Object, Object> e : props.entrySet()) {
-                    jobToProcess.put((String)e.getKey(), (String)e.getValue());
+                    jobObject.put((String)e.getKey(), (String)e.getValue());
                 }
 
-                int processTime = Integer.parseInt(jobToProcess.get("time")) / _weight;
+                int processTime = Integer.parseInt(jobObject.get("time")) / _weight;
 
                 Thread.sleep(processTime);
 
-                System.out.println("Node " + _nodeNum + " has completed " + jobToProcess.get("id") + " and  it took "+ processTime +" miliseconds and is now FREE");
+                System.out.println("Node " + _nodeNum + " has completed " + jobObject.get("id") + " and  it took "+ processTime +" miliseconds and is now FREE");
 
                 PrintWriter writer = new PrintWriter(currentNode.getOutputStream());
                 processedJobs.add(job);
                 writer.println("Job Complete: " + job);
                 writer.close();
+
+                if(Boolean.parseBoolean(jobObject.get("jobsEnd"))){
+                    recievedAllJobs = true;
+                    nodeIsAlive = false;
+                }
 
             }
         } catch(IOException e){
