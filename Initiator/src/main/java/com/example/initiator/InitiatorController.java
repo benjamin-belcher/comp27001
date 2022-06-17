@@ -8,8 +8,6 @@ import javafx.scene.text.Text;
 import java.io.IOException;
 
 public class InitiatorController {
-    @FXML
-    private Label titleText;
 
     @FXML
     private TextField numJobs;
@@ -21,13 +19,13 @@ public class InitiatorController {
     private TextField hostname;
 
     @FXML
-    protected void onSendBtnClicked() throws IOException {
+    protected void onSendBtnClicked() {
         try {
-
             for(int i = 0 ; i < Integer.parseInt(numJobs.getText()); i++) {
                 JobRequest job = new JobRequest();
                 JobSender sender = new JobSender();
 
+//                Send the job to the Load Balancer
                 sender.sendDataToServer(
                         job,
                         sender.connectToServer(
@@ -38,24 +36,7 @@ public class InitiatorController {
             }
         }
         catch (IOException ex) {
-            ex.printStackTrace(); // (**)
+            ex.printStackTrace();
         }
-
-
-
-
-
-//        JobSender send = new JobSender();
-//        send.connectToServer("localhost", 8080);
-//        for(int i = 0; i<Integer.parseInt(numJobs.getText()); i++){
-//            JobRequest job = new JobRequest();
-//            int Ijob = i;
-//            try{
-//                send.sendDataToServer(Ijob, send.socket);
-//            } catch(IOException e){
-//                e.printStackTrace();
-//            }
-//        }
-//        send.closeConnection(send.socket);
     }
 }

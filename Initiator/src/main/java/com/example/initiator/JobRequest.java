@@ -10,6 +10,7 @@ public class JobRequest {
      time = generateTime();
     }
 
+//    Generate a random number between 100 & 1000 which will be used for the Job time
     public int generateTime(){
         return (int) Math.floor(Math.random()*(1000-100+1)+100);
     }

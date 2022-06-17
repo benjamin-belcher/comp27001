@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JobSender {
-    Socket socket;
     JobSender(){
     }
 
@@ -23,13 +22,15 @@ public class JobSender {
 
     public void sendDataToServer(JobRequest job, Socket connection) throws IOException {
 
+//        Convert the JobRequest object to a HashMap, HashMaps are universal and easy to send across network
         Map<String, String> jobMap = new HashMap<>();
         jobMap.put("id", job.id.toString());
         jobMap.put("time", Integer.toString(job.time));
 
+//        Connect to the LoadBalancer
         PrintWriter writer = new PrintWriter(connection.getOutputStream());
 
-        // just make sure you send data and do not wait for response
+        // Send the data to the Load Balancer and clear the stream buffer to allow future jobs to be sent
         System.out.println("Sending Job : " + job.id);
         writer.println(jobMap);
         writer.flush();
