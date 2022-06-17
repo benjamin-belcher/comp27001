@@ -39,13 +39,17 @@ public class JobStore {
         }
     }
 
-    public void removeJob(Map<String, String> job){
+    public synchronized void removeJob(Map<String, String> job){
         if(jobs.contains(job)){
-            jobs.remove(jobs.indexOf(job));
-            for(IJobEvents clnt: listeners){
-                clnt.removeJob();
+            int jobIndex = jobs.indexOf(job);
+            if(jobIndex != -1){
+                jobs.remove(jobIndex);
+                for(IJobEvents clnt: listeners){
+                    clnt.removeJob();
+                }
+                System.out.println("Removing Job " + job + " From the store");
             }
-            System.out.println("Removing Job " + job + " From the store");
+
         }
     }
 

@@ -53,6 +53,8 @@ public class WorkerNodeServer implements Runnable, IJobEvents, INodeEvents{
                 BufferedReader reader = new BufferedReader(streamReader);
                 String message = reader.readLine();
 
+                System.out.println(message);
+
                 if(message != null){
                     // use properties to restore the map
                     Properties props = new Properties();
@@ -64,7 +66,7 @@ public class WorkerNodeServer implements Runnable, IJobEvents, INodeEvents{
 
                     if(Boolean.parseBoolean(map2.get("start"))){
                         RoundRobinScheduler rr = new RoundRobinScheduler(store, nodeStore);
-//                        store.addListener(rr);
+                        store.addListener(rr);
                     }
                 } else{
                     nodeStore.clearNodes();

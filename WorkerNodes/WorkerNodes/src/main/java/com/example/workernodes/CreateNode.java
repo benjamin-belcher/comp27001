@@ -48,7 +48,7 @@ public class CreateNode implements Runnable{
             Socket currentNode;
             List<String> processedJobs = new LinkedList<>();
             boolean recievedAllJobs = false;
-            while (!recievedAllJobs) {
+            while (true) {
                 currentNode = currentNodesServer.accept();
                 InputStreamReader streamReader = new InputStreamReader(currentNode.getInputStream());
                 BufferedReader reader = new BufferedReader(streamReader);
@@ -76,6 +76,7 @@ public class CreateNode implements Runnable{
                 writer.close();
 
                 if(Boolean.parseBoolean(jobObject.get("jobsEnd"))){
+                    System.out.println("Finished those jobs...");
                     recievedAllJobs = true;
                     nodeIsAlive = false;
                 }

@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.List;
 import java.util.Map;
 
 public class JobSenderThread implements Runnable{
@@ -35,9 +36,6 @@ public class JobSenderThread implements Runnable{
 
 //            Once job is sent remove it from the job store
             _store.removeJob(_job);
-
-//            String responseMessage = responseReader.readLine();
-//            System.out.println(responseMessage);
 
 
         } catch(IOException e){
