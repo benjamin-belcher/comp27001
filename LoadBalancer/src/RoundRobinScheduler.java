@@ -1,8 +1,3 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.*;
 
 public class RoundRobinScheduler implements Runnable, IJobEvents, INodeEvents{
@@ -22,13 +17,11 @@ public class RoundRobinScheduler implements Runnable, IJobEvents, INodeEvents{
 
     public void run(){
         nodes = nodeStore.getNodes();
-//        List<String> orderedNodes = OrderNodes();
-//        System.out.println("Ordered nodes "+orderedNodes);
-//        Needs to be a while true to cont
         if(jobs.size() == 0){
             jobs = store.getJobs();
         }
         ScheduleJobs();
+//        This while true keeps the thread alive so if there are other new jobs it can sort and send them
         while (true) {
         }
     }
@@ -62,7 +55,6 @@ public class RoundRobinScheduler implements Runnable, IJobEvents, INodeEvents{
     public boolean ScheduleJobs(){
 //        This list is a list of available nodes, taken into account each nodes weight ( capability to process taksks )
         List<String> orderedNodes = OrderNodes();
-//        System.out.println("Ordered nodes "+orderedNodes);
 
 //        Set up a counter to track the position of the node list
         int nodeIndex = 0;
@@ -70,7 +62,7 @@ public class RoundRobinScheduler implements Runnable, IJobEvents, INodeEvents{
 //            System.out.println("There are no jobs to send...");
         } else {
             for (int i = 0; i < jobs.size(); i++) {
-                //            Reset the counter if the index of the job list is the same as the last index in the node list
+//            Reset the counter if the index of the job list is the same as the last index in the node list
                 if (nodeIndex == orderedNodes.size()) {
                     nodeIndex = 0;
                 }

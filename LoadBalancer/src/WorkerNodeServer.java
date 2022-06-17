@@ -51,21 +51,22 @@ public class WorkerNodeServer implements Runnable, IJobEvents, INodeEvents{
 
                 InputStreamReader streamReader = new InputStreamReader(newClient.getInputStream());
                 BufferedReader reader = new BufferedReader(streamReader);
-                String message = reader.readLine();
+                String startMessage = reader.readLine();
 
-                System.out.println(message);
+                System.out.println(startMessage);
 
-                if(message != null){
+                if(startMessage != null){
                     // use properties to restore the map
                     Properties props = new Properties();
-                    props.load(new StringReader(message.substring(1, message.length() - 1).replace(", ", "\n")));
-                    Map<String, String> map2 = new HashMap<String, String>();
+                    props.load(new StringReader(startMessage.substring(1, startMessage.length() - 1).replace(", ", "\n")));
+                    Map<String, String> request = new HashMap<String, String>();
                     for (Map.Entry<Object, Object> e : props.entrySet()) {
-                        map2.put((String)e.getKey(), (String) e.getValue());
+                        request.put((String)e.getKey(), (String) e.getValue());
                     }
 
-                    if(Boolean.parseBoolean(map2.get("start"))){
+                    if(Boolean.parseBoolean(request.get("start"))){
                         RoundRobinScheduler rr = new RoundRobinScheduler(store, nodeStore);
+//                        Connect the Round Robin Scheduler to the Job Store events
                         store.addListener(rr);
                     }
                 } else{

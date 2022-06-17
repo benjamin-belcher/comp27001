@@ -7,7 +7,7 @@ public class WorkerNodeDetailsServer implements Runnable{
     Thread t;
     WorkerNodeStore nodeStore;
 
-    WorkerNodeDetailsServer(JobStore _store, WorkerNodeStore _nodeStore){
+    WorkerNodeDetailsServer(WorkerNodeStore _nodeStore){
         nodeStore = _nodeStore;
         t = new Thread(this, "WorkerNodeDertailsHandler");
         System.out.println(t.getName() + " Has started to handle incoming jobs.");
@@ -28,16 +28,17 @@ public class WorkerNodeDetailsServer implements Runnable{
     public void run(){
         try{
             ServerSocket nodeDetailsServerSocket = createSocket(7071);
-            List<String> integerList = new LinkedList<>();
             Socket node;
+
             while(true){
                 node = nodeDetailsServerSocket.accept();
 
+//                Connect to the worker nodes and set up a buffer to store incomming requests
                 InputStreamReader streamReader = new InputStreamReader(node.getInputStream());
                 BufferedReader reader = new BufferedReader(streamReader);
                 String message = reader.readLine();
 
-                // use properties to restore the map
+                // Restore node details to a HashMap
                 Properties props = new Properties();
                 props.load(new StringReader(message.substring(1, message.length() - 1).replace(", ", "\n")));
                 Map<String, String> map2 = new HashMap<String, String>();
@@ -48,11 +49,6 @@ public class WorkerNodeDetailsServer implements Runnable{
                 nodeStore.addNode(map2);
 
                 System.out.println("Current nodes in store: " + nodeStore.getNodes());
-
-                PrintWriter writer = new PrintWriter(node.getOutputStream());
-                integerList.add(message);
-                writer.println(integerList);
-                writer.close();
 
             }
         } catch (IOException e) {

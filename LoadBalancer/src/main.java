@@ -6,7 +6,7 @@ public class main {
         System.out.println("Load Balancer Started: ");
         new InitiatorServer(store);
         WorkerNodeServer nodeServer = new WorkerNodeServer(store, nodeStore);
-        WorkerNodeDetailsServer nodeDetailsServer = new WorkerNodeDetailsServer(store, nodeStore);
+        WorkerNodeDetailsServer nodeDetailsServer = new WorkerNodeDetailsServer(nodeStore);
         store.addListener(nodeServer);
         nodeStore.addListener(nodeServer);
 

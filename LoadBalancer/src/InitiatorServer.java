@@ -30,64 +30,28 @@ public class InitiatorServer implements Runnable{
             ServerSocket ss = createSocket(7777);
             Socket s;
 
-            //we need to store incomming requests to process, and return them
-            List<String> integerList = new LinkedList<>();
+//            Need a while true to constantly listen for new incomming jobs
             while (true) {
                 s = ss.accept();
 
+//                Connect to the incomming stream and set up a buffer to store the incomming jobs
                 InputStreamReader streamReader = new InputStreamReader(s.getInputStream());
                 BufferedReader reader = new BufferedReader(streamReader);
-                String message = reader.readLine();
 
-                // use properties to restore the map
+//                Extracting the job from buffer
+                String incommingJob = reader.readLine();
+
+                // Convert the incomming job back to a HashMap as it loses its structure being sent
                 Properties props = new Properties();
-                props.load(new StringReader(message.substring(1, message.length() - 1).replace(", ", "\n")));
-                Map<String, String> map2 = new HashMap<String, String>();
+                props.load(new StringReader(incommingJob.substring(1, incommingJob.length() - 1).replace(", ", "\n")));
+                Map<String, String> jobObj = new HashMap<String, String>();
                 for (Map.Entry<Object, Object> e : props.entrySet()) {
-                    map2.put((String)e.getKey(), (String)e.getValue());
+                    jobObj.put((String)e.getKey(), (String)e.getValue());
                 }
 
-                store.addJob(map2);
-
-                PrintWriter writer = new PrintWriter(s.getOutputStream());
-                integerList.add(message);
-                writer.println(integerList);
-                writer.close();
+//                Add the job to the Job Store
+                store.addJob(jobObj);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void handleInitatorRequests(){
-        try{
-            ServerSocket ss = createSocket(7777);
-            Socket s;
-
-            //we need to store incomming requests to process, and return them
-            List<String> integerList = new LinkedList<>();
-            while (true) {
-                s = ss.accept();
-
-                InputStreamReader streamReader = new InputStreamReader(s.getInputStream());
-                BufferedReader reader = new BufferedReader(streamReader);
-                String message = reader.readLine();
-
-                // use properties to restore the map
-                Properties props = new Properties();
-                props.load(new StringReader(message.substring(1, message.length() - 1).replace(", ", "\n")));
-                Map<String, String> map2 = new HashMap<String, String>();
-                for (Map.Entry<Object, Object> e : props.entrySet()) {
-                    map2.put((String)e.getKey(), (String)e.getValue());
-                }
-
-                System.out.println("Back to map job: "+map2);
-
-                PrintWriter writer = new PrintWriter(s.getOutputStream());
-                integerList.add(message);
-                writer.println(integerList);
-                writer.close();
-        }
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -25,8 +25,6 @@ public class JobSenderThread implements Runnable{
         try{
 //            Connect to the worker node
             Socket nodeConnection = new Socket("localhost",5000+_nodeNum);
-//            InputStreamReader response = new InputStreamReader((nodeConnection.getInputStream()));
-//            BufferedReader responseReader = new BufferedReader(response);
 
 //            Here we are sending the jobs and not waiting for a response
             PrintWriter writer = new PrintWriter(nodeConnection.getOutputStream());
