@@ -11,15 +11,15 @@ To run our solution for yourself follow these steps:
 ## Build Configurations
 **Initiator**
 
-The main class is `InitiatorApplication.java`
+- The main class is `InitiatorApplication.java`
 
 **Load Balancer**
 
-The main class is `main.java`
+- The main class is `main.java`
 
 **Worker Nodes**
 
-The main class is `NodesApplication.java`
+- The main class is `NodesApplication.java`
 
 # Video Demo
 Below is a link to the video demo:
