@@ -9,13 +9,16 @@ To run our solution for yourself follow these steps:
 - Run all apps and then follow along with the video
 
 ## Build Configurations
-** Initiator **
+**Initiator**
+
 The main class is `InitiatorApplication.java`
 
-** Load Balancer **
+**Load Balancer**
+
 The main class is `main.java`
 
-** Worker Nodes **
+**Worker Nodes**
+
 The main class is `NodesApplication.java`
 
 # Video Demo
